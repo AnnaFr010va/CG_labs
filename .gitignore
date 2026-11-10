@@ -1,0 +1,11 @@
+.idea
+.venv
+lab1/main.py
+lab3/.idea
+lab3/.venv
+lab3/__pycache__
+lab2/.idea
+lab2/.venv
+lab2/__pycache__
+lab2/Lab2.spec
+lab2/build
