@@ -7,40 +7,29 @@ def rnd(v):
 
 
 def step_by_step(x1, y1, x2, y2, log=None):
-    """Пошаговый алгоритм: y = kx + b, шаг 1 по ведущей оси, округление результата."""
-    dx, dy = x2 - x1, y2 - y1
-    if dx == 0 and dy == 0:
+    """Пошаговый алгоритм: x увеличивается на 1, y = kx + b округляется до целого."""
+    if x1 == x2:
+        if log is not None:
+            log.append("Dx = 0 -> k = Dy/Dx не существует, ставится только начальная точка")
         return [(x1, y1)]
+    if x1 > x2:
+        x1, y1, x2, y2 = x2, y2, x1, y1
+    dx, dy = x2 - x1, y2 - y1
+    k = dy / dx
+    b = y1 - k * x1
+    if log is not None:
+        log.append(f"y = kx + b,  k = {dy}/{dx} = {k:.4f},  b = {b:.4f}")
     pts = []
-    if abs(dx) >= abs(dy):                      # пологий: шаг по x, y = kx + b
-        k = dy / dx
-        b = y1 - k * x1
+    for x in range(x1, x2 + 1):
+        y = k * x + b
+        pts.append((x, rnd(y)))
         if log is not None:
-            log.append(f"|Dx| >= |Dy| -> шаг по X")
-            log.append(f"y = kx + b,  k = {dy}/{dx} = {k:.4f},  b = {b:.4f}")
-        s = 1 if dx > 0 else -1
-        for x in range(x1, x2 + s, s):
-            y = k * x + b
-            pts.append((x, rnd(y)))
-            if log is not None:
-                log.append(f"x={x}: y = {k:.4f}*{x} + {b:.4f} = {y:.4f} -> {rnd(y)}")
-    else:                                       # крутой: шаг по y, x = ky + b
-        k = dx / dy
-        b = x1 - k * y1
-        if log is not None:
-            log.append(f"|Dy| > |Dx| -> шаг по Y")
-            log.append(f"x = ky + b,  k = {dx}/{dy} = {k:.4f},  b = {b:.4f}")
-        s = 1 if dy > 0 else -1
-        for y in range(y1, y2 + s, s):
-            x = k * y + b
-            pts.append((rnd(x), y))
-            if log is not None:
-                log.append(f"y={y}: x = {k:.4f}*{y} + {b:.4f} = {x:.4f} -> {rnd(x)}")
+            log.append(f"x={x}: y = {k:.4f}*{x} + {b:.4f} = {y:.4f} -> {rnd(y)}")
     return pts
 
 
 def dda(x1, y1, x2, y2, log=None):
-    """Симметричный ЦДА: L = max(|Dx|, |Dy|) шагов, приращения Dx/L и Dy/L."""
+    """Симметричный ЦДА: L = max(|Dx|, |Dy|) шагов, приращения Dx/L и Dy/L, дробная часть отбрасывается."""
     dx, dy = x2 - x1, y2 - y1
     L = max(abs(dx), abs(dy))
     if L == 0:
@@ -52,9 +41,9 @@ def dda(x1, y1, x2, y2, log=None):
     pts = []
     x, y = float(x1), float(y1)
     for i in range(L + 1):
-        pts.append((rnd(x), rnd(y)))
+        pts.append((int(x), int(y)))
         if log is not None:
-            log.append(f"i={i}: x = {x:.4f}, y = {y:.4f} -> ({rnd(x)}, {rnd(y)})")
+            log.append(f"i={i}: x = {x:.4f}, y = {y:.4f} -> ({int(x)}, {int(y)})")
         x += x_inc
         y += y_inc
     return pts

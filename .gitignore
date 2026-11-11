@@ -1,6 +1,10 @@
 .idea
 .venv
-lab1/main.py
+lab1/.idea
+lab1/.venv
+lab1/__pycache__
+lab1/lab1.spec
+lab1/build
 lab3/.idea
 lab3/.venv
 lab3/__pycache__
